@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Restaurant from './Restaurant'
+//import Restaurant from './Restaurant';
+//import StateOptions from './StateOptions';
 import './App.css';
 
 class App extends Component {
@@ -9,6 +10,7 @@ class App extends Component {
     this.state = {
       restaurants: [],
       isLoaded: false,
+      selectedState: '',
     } 
   }
 
@@ -22,10 +24,13 @@ class App extends Component {
         isLoaded: true,
         restaurants: json,
       })
+    })
+    .catch(error => {
+      console.log(error);
     });
   }
 
-    handleInputChange(event) {
+  handleInputChange(event) {
     const target = event.target;
     const value = target.name === 'isGoing' ? target.checked : target.value;
     const name = target.name;
@@ -34,8 +39,6 @@ class App extends Component {
       [name]: value
     });
   }
-
-
 
   render() {
 
@@ -50,21 +53,47 @@ class App extends Component {
         <p>When hunger kicks in during quarantine, use Hungr to search for a restaurant. </p>
         <form className='search-form'>
           <label>
-          Search for a reastaurant
+          Search by name, city or genre
             <input 
             className='search-bar' 
             type='text' 
-            placeholder="Search Restaurants"
+            placeholder="e.g: Denver"
             onChange={this.handleInputChange}
-          />
+            />
+            <button
+            className='search-button' 
+            type='submit'
+            > 
+            Search 
+            </button>
           </label>
           <br />
-          <button
-          className='search-button' 
-          type='submit'
-          > 
-          Search 
-          </button>
+          <label>
+          State
+          <select value={this.state.filteredState}
+              onChange={(e) => this.setState({filteredState: e.target.value})}>
+          {restaurants
+            .sort((a, b) => a.state.localeCompare(b.state))
+            .map(filteredStates => (
+              <option key={filteredStates.value}>
+              {filteredStates.state}
+              </option>
+          ))}
+
+          </select>
+          </label>
+          <label>
+          Genre
+          <select>
+          {restaurants
+            .sort((a, b) => a.genre.localeCompare(b.genre))
+            .map(filteredGenre => (
+              <option>
+              {filteredGenre.genre}
+              </option>
+          ))}
+          </select>
+          </label>
         </form>
         <table>
           <tbody>
@@ -78,14 +107,20 @@ class App extends Component {
         {restaurants
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((restaurant, id) => (
-        <Restaurant 
-        key={restaurant.id}
-        name={restaurant.name} 
-        city={restaurant.city} 
-        state={restaurant.state} 
-        telephone={restaurant.telephone} 
-        genre={restaurant.genre}
-        />
+            <tr
+            key={restaurant.id}
+            name={restaurant.name} 
+            city={restaurant.city} 
+            state={restaurant.state} 
+            telephone={restaurant.telephone} 
+            genre={restaurant.genre}
+            >
+              <td>{restaurant.name}</td>
+              <td>{restaurant.city}</td>
+              <td>{restaurant.state}</td>
+              <td>{restaurant.telephone}</td>
+              <td>{restaurant.genre}</td>
+            </tr>
         ))}
           </tbody>
           </table>
