@@ -11,10 +11,10 @@ class App extends Component {
       restaurants: [],
       isLoaded: false,
       selectedState: '',
-      selectedSearch: null,
+      selectedSearch: '',
       selectedGenre: '',
       search: null,
-      resListLoaded: false
+      resListLoaded: 0
     } 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -54,18 +54,30 @@ class App extends Component {
   const restaurantList = restaurants
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter((data) => {
-      if(this.state.selectedSearch === null || this.state.selectedSearch === '')
+      if(this.state.selectedSearch === '' && this.state.selectedState === '' && this.state.selectedGenre === '') {
         return data
-      else if(data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) {
+      }
+      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === '' && this.state.selectedGenre === '') {
+        return data
+      }
+      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === '') {
+        return data
+      }
+      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === data.genre) {
+        return data
+      }
+      else if(this.state.selectedSearch === '' && this.state.selectedState === data.state && this.state.selectedGenre === '') {
+        return data
+      }
+      else if(this.state.selectedSearch === '' && this.state.selectedState === '' && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
+        return data
+      }
+      else if(this.state.selectedSearch === '' && data.state.toLowerCase().includes(this.state.selectedState.toLowerCase()) && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
         return data
       }
     })
+
     .map(restaurant => {
-      if (restaurant === 0) {
-        return (
-          <div> There are no matching results </div>
-        )
-      }
       return(
       <tr
       key={restaurant.id}
@@ -83,6 +95,7 @@ class App extends Component {
       </tr>
       )
     })
+    
 
   if (!isLoaded) {
     return <div> Loading restaurants... </div>
@@ -114,8 +127,9 @@ class App extends Component {
             State
               <select 
               value={this.state.selectedState}
-              onChange={(e) => this.setState({selectedState: e.target.value})}>
-                <option key='all-states'>All</option>
+              onChange={(e) => this.setState({selectedState: e.target.value})}
+              >
+                <option value=''>All</option>
                 <option value="AL">Alabama</option>
                 <option value="AK">Alaska</option>
                 <option value="AZ">Arizona</option>
@@ -171,9 +185,9 @@ class App extends Component {
             </label>
             <label>
             Genre
-              <select value={this.state.selectedState}
-                  onChange={(e) => this.setState({selectedGenre: e.target.value})}>
-                <option key='all-genres'>All</option>
+              <select value={this.state.selectedGenre}
+                onChange={(e) => this.setState({selectedGenre: e.target.value})}>
+                <option value=''>All</option>
                 <option value="American">American</option>
                 <option value="Asian">Asian</option>
                 <option value="Bakery">Bakery</option>
@@ -188,6 +202,7 @@ class App extends Component {
                 <option value="European">European</option>
                 <option value="French">French</option>
                 <option value="Fusion">Fusion</option>
+                <option value="Grill">Grill</option>
                 <option value="Hawaiian">Hawaiian</option>
                 <option value="International">International</option>
                 <option value="Irish">Irish</option>
@@ -228,61 +243,3 @@ class App extends Component {
 }
 
 export default App;
-
-              // {restaurants
-              //   .sort((a, b) => a.name.localeCompare(b.name))
-              //   .map((restaurant, id) => (
-              //     <tr
-              //     key={restaurant.id}
-              //     name={restaurant.name} 
-              //     city={restaurant.city} 
-              //     state={restaurant.state} 
-              //     telephone={restaurant.telephone} 
-              //     genre={restaurant.genre}
-              //     >
-              //       <td>{restaurant.name}</td>
-              //       <td>{restaurant.city}</td>
-              //       <td>{restaurant.state}</td>
-              //       <td>{restaurant.telephone}</td>
-              //       <td>{restaurant.genre}</td>
-              //     </tr>
-              // ))}
-
-
-    // const items = Information
-    // .filter((data)=>{
-    //   if(this.state.search == null)
-    //       return data
-    //   else if(data.name.toLowerCase().includes(this.state.search.toLowerCase()) || data.country.toLowerCase().includes(this.state.search.toLowerCase())){
-    //       return data
-    //   }
-    // }).map(data=>{
-    //   return(
-    //   <div>
-    //     <ul>
-    //       <li style={{position:'relative',left:'10vh'}}>
-    //         <span style={styleInfo}>{data.name}</span>
-    //         <span style={styleInfo}>{data.age}</span>
-    //         <span style={styleInfo}>{data.country}</span>
-    //       </li>
-    //     </ul>
-    //   </div>
-    //   )
-    // })
-
-
-                // {restaurants
-                //   .sort((a, b) => a.state.localeCompare(b.state))
-                //   .map(selectedState => (
-                //     <option key={selectedState.value} value={selectedState.value}>
-                //     {selectedState.state}
-                //     </option>
-                // ))}
-
-                // {restaurants
-                //   .sort((a, b) => a.genre.localeCompare(b.genre))
-                //   .map(selectedGenre => (
-                //     <option key={selectedGenre.value} value={selectedGenre.value}>
-                //     {selectedGenre.genre}
-                //     </option>
-                // ))}
