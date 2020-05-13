@@ -14,10 +14,11 @@ class App extends Component {
       selectedSearch: '',
       selectedGenre: '',
       search: null,
-      resListLoaded: 0
-    } 
+      resListAmount: 0
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onClick = this.clearAll.bind(this);
   }
 
   componentDidMount() {
@@ -46,6 +47,14 @@ class App extends Component {
     this.setState({selectedSearch: this.state.search})
   }
 
+  clearAll(event) {
+    this.setState({
+    selectedState: "",
+    selectedSearch: "",
+    selectedGenre: ""     
+    });
+  }
+
   render() {
 
   var { isLoaded, restaurants } = this.state;
@@ -54,49 +63,53 @@ class App extends Component {
   const restaurantList = restaurants
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter((data) => {
-      if(this.state.selectedSearch === '' && this.state.selectedState === '' && this.state.selectedGenre === '') {
-        return data
-      }
-      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === '' && this.state.selectedGenre === '') {
-        return data
-      }
-      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === '') {
-        return data
-      }
-      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === data.genre) {
-        return data
-      }
-      else if(this.state.selectedSearch === '' && this.state.selectedState === data.state && this.state.selectedGenre === '') {
-        return data
-      }
-      else if(this.state.selectedSearch === '' && this.state.selectedState === '' && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
-        return data
-      }
-      else if(this.state.selectedSearch === '' && data.state.toLowerCase().includes(this.state.selectedState.toLowerCase()) && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
-        return data
-      }
-    })
-
-    .map(restaurant => {
-      return(
-      <tr
-      key={restaurant.id}
-      name={restaurant.name} 
-      city={restaurant.city} 
-      state={restaurant.state} 
-      telephone={restaurant.telephone} 
-      genre={restaurant.genre}
-      >
-        <td>{restaurant.name}</td>
-        <td>{restaurant.city}</td>
-        <td>{restaurant.state}</td>
-        <td>{restaurant.telephone}</td>
-        <td>{restaurant.genre}</td>
-      </tr>
-      )
-    })
-    
-
+    if(this.state.selectedSearch === '' && this.state.selectedState === '' && this.state.selectedGenre === '') {
+      return data
+    }
+    else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === '' && this.state.selectedGenre === '') {
+      return data
+    }
+    else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === '') {
+      return data
+    }
+    else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === data.genre) {
+      return data
+    }
+    else if(this.state.selectedSearch === '' && this.state.selectedState === data.state && this.state.selectedGenre === '') {
+      return data
+    }
+    else if(this.state.selectedSearch === '' && this.state.selectedState === '' && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
+      return data
+    }
+    else if(this.state.selectedSearch === '' && data.state.toLowerCase().includes(this.state.selectedState.toLowerCase()) && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
+      return data
+    }
+  })
+  .map(restaurant => {
+    this.state.resListAmount = 1;
+    return(
+    <tr
+    key={restaurant.id}
+    name={restaurant.name} 
+    city={restaurant.city} 
+    state={restaurant.state} 
+    telephone={restaurant.telephone} 
+    genre={restaurant.genre}
+    >
+      <td>{restaurant.name}</td>
+      <td>{restaurant.city}</td>
+      <td>{restaurant.state}</td>
+      <td>{restaurant.telephone}</td>
+      <td>{restaurant.genre}</td>
+    </tr>
+    )
+  }, this.state.resListAmount = 0)
+      
+  const noResults = () => {
+    if(this.state.resListAmount === 0) {
+      return <p>no results</p>
+    }
+  }
   if (!isLoaded) {
     return <div> Loading restaurants... </div>
   } else {
@@ -224,6 +237,7 @@ class App extends Component {
               </select>
             </label>
           </form>
+          <button type="button" onClick={this.onClick}>Reset All</button>
           <table>
             <tbody>
               <tr>
@@ -236,6 +250,7 @@ class App extends Component {
             {restaurantList}
             </tbody>
           </table>
+          {noResults()}
         </div>
       );
     }
@@ -243,3 +258,5 @@ class App extends Component {
 }
 
 export default App;
+
+          //<button type="button" onClick={this.clearAll}>Reset All</button>
