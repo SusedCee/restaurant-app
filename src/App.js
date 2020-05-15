@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-//import Restaurant from './Restaurant';
-//import StateOptions from './StateOptions';
 import './App.css';
 
 class App extends Component {
@@ -13,8 +11,9 @@ class App extends Component {
       selectedState: '',
       selectedSearch: '',
       selectedGenre: '',
-      search: null,
-      resListAmount: 0
+      currentPage: 1,
+      resPerPage: 10,
+      resList: 0
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -57,8 +56,7 @@ class App extends Component {
 
   render() {
 
-  var { isLoaded, restaurants } = this.state;
-  console.log(this.state);
+  var { isLoaded, restaurants, currentPage, resPerPage } = this.state;
 
   const restaurantList = restaurants
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -84,32 +82,60 @@ class App extends Component {
     else if(this.state.selectedSearch === '' && data.state.toLowerCase().includes(this.state.selectedState.toLowerCase()) && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
       return data
     }
+
   })
-  .map(restaurant => {
-    this.state.resListAmount = 1;
-    return(
-    <tr
-    key={restaurant.id}
-    name={restaurant.name} 
-    city={restaurant.city} 
-    state={restaurant.state} 
-    telephone={restaurant.telephone} 
-    genre={restaurant.genre}
-    >
-      <td>{restaurant.name}</td>
-      <td>{restaurant.city}</td>
-      <td>{restaurant.state}</td>
-      <td>{restaurant.telephone}</td>
-      <td>{restaurant.genre}</td>
-    </tr>
-    )
-  }, this.state.resListAmount = 0)
-      
+  // .map(restaurant => {
+  //   return(
+  //   <tr
+  //   key={restaurant.id}
+  //   name={restaurant.name} 
+  //   city={restaurant.city} 
+  //   state={restaurant.state} 
+  //   telephone={restaurant.telephone} 
+  //   genre={restaurant.genre}
+  //   >
+  //     <td>{restaurant.name}</td>
+  //     <td>{restaurant.city}</td>
+  //     <td>{restaurant.state}</td>
+  //     <td>{restaurant.telephone}</td>
+  //     <td>{restaurant.genre}</td>
+  //   </tr>
+  //   )
+  // },)
+
   const noResults = () => {
-    if(this.state.resListAmount === 0) {
+    if(restaurantList.length === 0) {
       return <p>no results</p>
     }
   }
+
+  //Get current posts
+  const indexOfLastRes = currentPage * resPerPage;
+  const indexOfFirstRes = indexOfLastRes - resPerPage;
+  const currentRestaurants = restaurantList.slice(indexOfFirstRes, indexOfLastRes);
+  const pageNumbers = [];
+
+  const numberPage = () => {
+    for (let i = 1; i <= Math.ceil(restaurantList.length / resPerPage); i++) {
+      pageNumbers.push(i);
+    }
+    return (
+      <nav>
+        <ul className='pagination'>
+        {pageNumbers.map(number => (
+          <li key={number} className='page-item'>
+            <a href='!#' className='page-link'>
+            {number}
+            </a>
+          </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+
+console.log(this.state); 
+
   if (!isLoaded) {
     return <div> Loading restaurants... </div>
   } else {
@@ -247,10 +273,28 @@ class App extends Component {
                 <td>Phone</td>
                 <td>Genre</td>
               </tr>
-            {restaurantList}
+            {currentRestaurants.map(restaurant => {
+              return(
+              <tr
+              key={restaurant.id}
+              name={restaurant.name} 
+              city={restaurant.city} 
+              state={restaurant.state} 
+              telephone={restaurant.telephone} 
+              genre={restaurant.genre}
+              >
+                <td>{restaurant.name}</td>
+                <td>{restaurant.city}</td>
+                <td>{restaurant.state}</td>
+                <td>{restaurant.telephone}</td>
+                <td>{restaurant.genre}</td>
+              </tr>
+              )
+            },)}
             </tbody>
           </table>
           {noResults()}
+          {numberPage()}
         </div>
       );
     }
@@ -258,5 +302,3 @@ class App extends Component {
 }
 
 export default App;
-
-          //<button type="button" onClick={this.clearAll}>Reset All</button>
