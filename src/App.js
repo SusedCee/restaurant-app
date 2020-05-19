@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
+import { Form, Button } from 'react-bootstrap';
+import Restaurants from './components/Restaurants';
+import Pagination from './components/Pagination';
+//import Formm from './components/Form';
 
 class App extends Component {
 
@@ -13,7 +17,6 @@ class App extends Component {
       selectedGenre: '',
       currentPage: 1,
       resPerPage: 10,
-      resList: 0
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -38,19 +41,20 @@ class App extends Component {
   }
 
   handleChange(event) {
-    this.setState({search: event.target.value});
+    this.setState({search: event.target.value, currentPage: 1});
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    this.setState({selectedSearch: this.state.search})
+    this.setState({selectedSearch: this.state.search, currentPage: 1})
   }
 
   clearAll(event) {
     this.setState({
     selectedState: "",
     selectedSearch: "",
-    selectedGenre: ""     
+    selectedGenre: "" , 
+    currentPage: 1,    
     });
   }
 
@@ -84,89 +88,48 @@ class App extends Component {
     }
 
   })
-  // .map(restaurant => {
-  //   return(
-  //   <tr
-  //   key={restaurant.id}
-  //   name={restaurant.name} 
-  //   city={restaurant.city} 
-  //   state={restaurant.state} 
-  //   telephone={restaurant.telephone} 
-  //   genre={restaurant.genre}
-  //   >
-  //     <td>{restaurant.name}</td>
-  //     <td>{restaurant.city}</td>
-  //     <td>{restaurant.state}</td>
-  //     <td>{restaurant.telephone}</td>
-  //     <td>{restaurant.genre}</td>
-  //   </tr>
-  //   )
-  // },)
-
-  const noResults = () => {
-    if(restaurantList.length === 0) {
-      return <p>no results</p>
-    }
-  }
 
   //Get current posts
   const indexOfLastRes = currentPage * resPerPage;
   const indexOfFirstRes = indexOfLastRes - resPerPage;
   const currentRestaurants = restaurantList.slice(indexOfFirstRes, indexOfLastRes);
-  const pageNumbers = [];
+  //const pageNumbers = [];
 
-  const numberPage = () => {
-    for (let i = 1; i <= Math.ceil(restaurantList.length / resPerPage); i++) {
-      pageNumbers.push(i);
-    }
-    return (
-      <nav>
-        <ul className='pagination'>
-        {pageNumbers.map(number => (
-          <li key={number} className='page-item'>
-            <a href='!#' className='page-link'>
-            {number}
-            </a>
-          </li>
-          ))}
-        </ul>
-      </nav>
-    )
-  }
+//change page 
+  const paginate = (pageNumber) => {
+    this.setState({currentPage: pageNumber});
+  } 
 
-console.log(this.state); 
-
-  if (!isLoaded) {
-    return <div> Loading restaurants... </div>
-  } else {
+console.log(this.state);
       return (
         <div className='App'>
           <h1>HUNGR</h1>
           <p>When hunger kicks in during quarantine, use Hungr to search for a restaurant. </p>
-          <form className='search-form'>
-            <label>
+          <Form.Group className='search-form'>
+            <Form.Label>
             Search by name, city, or genre
-              <input
-              className='search-bar' 
+              <Form.Control
+              className='search-bar'
               type='text' 
               value={this.state.value}
               placeholder="e.g: Studio Cake, Reno, Italian"
               onChange={this.handleChange}
               />
-            </label>
-              <button
+            </Form.Label>
+              <Button
+              variant="outline-dark"
               className='search-button' 
               type='button'
               onClick={this.handleSubmit}
               > 
               Search 
-              </button>
-            <br />
+              </Button>
+              <br />
             <label>
             State
               <select 
               value={this.state.selectedState}
-              onChange={(e) => this.setState({selectedState: e.target.value})}
+              onChange={(e) => this.setState({selectedState: e.target.value, currentPage: 1})}
               >
                 <option value=''>All</option>
                 <option value="AL">Alabama</option>
@@ -225,7 +188,7 @@ console.log(this.state);
             <label>
             Genre
               <select value={this.state.selectedGenre}
-                onChange={(e) => this.setState({selectedGenre: e.target.value})}>
+                onChange={(e) => this.setState({selectedGenre: e.target.value, currentPage: 1})}>
                 <option value=''>All</option>
                 <option value="American">American</option>
                 <option value="Asian">Asian</option>
@@ -262,43 +225,13 @@ console.log(this.state);
                 <option value="Vietnamese">Vietnamese</option>
               </select>
             </label>
-          </form>
-          <button type="button" onClick={this.onClick}>Reset All</button>
-          <table>
-            <tbody>
-              <tr>
-                <td>Name</td>
-                <td>City</td>
-                <td>State</td>
-                <td>Phone</td>
-                <td>Genre</td>
-              </tr>
-            {currentRestaurants.map(restaurant => {
-              return(
-              <tr
-              key={restaurant.id}
-              name={restaurant.name} 
-              city={restaurant.city} 
-              state={restaurant.state} 
-              telephone={restaurant.telephone} 
-              genre={restaurant.genre}
-              >
-                <td>{restaurant.name}</td>
-                <td>{restaurant.city}</td>
-                <td>{restaurant.state}</td>
-                <td>{restaurant.telephone}</td>
-                <td>{restaurant.genre}</td>
-              </tr>
-              )
-            },)}
-            </tbody>
-          </table>
-          {noResults()}
-          {numberPage()}
+          </Form.Group>
+          <Button variant="outline-dark" type="button" onClick={this.onClick}>Reset All</Button>
+          <Restaurants currentRestaurants={currentRestaurants} restaurantList={restaurantList} isLoaded={isLoaded} />
+          <Pagination resPerPage={resPerPage} totalRes={restaurantList.length}  paginate={paginate}/>
         </div>
       );
     }
-  }
 }
 
 export default App;
