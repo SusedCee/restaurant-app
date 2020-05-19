@@ -4,7 +4,32 @@ const Formm = ({ restaurants, handleSubmit, handleState, selectedState, selected
 
 
 	return(
-			<select>
+          <Form.Group className='search-form'>
+            <Form.Label>
+            Search by name, city, or genre
+              <Form.Control
+              className='search-bar'
+              type='text' 
+              value={this.state.value}
+              placeholder="e.g: Studio Cake, Reno, Italian"
+              onChange={this.handleChange}
+              />
+            </Form.Label>
+              <Button
+              variant="outline-dark"
+              className='search-button' 
+              type='button'
+              onClick={this.handleSubmit}
+              > 
+              Search 
+              </Button>
+              <br />
+            <label>
+            State
+              <select 
+              value={this.state.selectedState}
+              onChange={(e) => this.setState({selectedState: e.target.value, currentPage: 1})}
+              >
                 <option value=''>All</option>
                 <option value="AL">Alabama</option>
                 <option value="AK">Alaska</option>
@@ -57,7 +82,50 @@ const Formm = ({ restaurants, handleSubmit, handleState, selectedState, selected
                 <option value="WV">West Virginia</option>
                 <option value="WI">Wisconsin</option>
                 <option value="WY">Wyoming</option>
-            </select>
+              </select>
+            </label>
+            <label>
+            Genre
+              <select value={this.state.selectedGenre}
+                onChange={(e) => this.setState({selectedGenre: e.target.value, currentPage: 1})}>
+                <option value=''>All</option>
+                <option value="American">American</option>
+                <option value="Asian">Asian</option>
+                <option value="Bakery">Bakery</option>
+                <option value="Belgian">Belgian</option>
+                <option value="Bistro">Bistro</option>
+                <option value="British">British</option>
+                <option value="Cafe">Cafe</option>
+                <option value="Coffee">Coffee</option>
+                <option value="Contemporary">Contemporary</option>
+                <option value="Continental">Continental</option>
+                <option value="Eclectic">Eclectic</option>
+                <option value="European">European</option>
+                <option value="French">French</option>
+                <option value="Fusion">Fusion</option>
+                <option value="Grill">Grill</option>
+                <option value="Hawaiian">Hawaiian</option>
+                <option value="International">International</option>
+                <option value="Irish">Irish</option>
+                <option value="Italian">Italian</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Kosher">Kosher</option>
+                <option value="Oysters">Oysters</option>
+                <option value="Pasta">Pasta</option>
+                <option value="Polynesian">Polynesian</option>
+                <option value="Pacific Rim">Pacific Rim</option>
+                <option value="Sandwiches">Sandwiches</option>
+                <option value="Seafood">Seafood</option>
+                <option value="Steak">Steak</option>
+                <option value="Sushi">Sushi</option>
+                <option value="Tea">Tea</option>
+                <option value="Traditional">Traditional</option>
+                <option value="Vegetarian">Vegetarian</option>
+                <option value="Vietnamese">Vietnamese</option>
+              </select>
+            </label>
+          </Form.Group>
+          <Button variant="outline-dark" type="button" onClick={this.onClick}>Reset All</Button>
 	)
 }
 

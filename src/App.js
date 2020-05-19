@@ -104,7 +104,7 @@ console.log(this.state);
       return (
         <div className='App'>
           <h1>HUNGR</h1>
-          <p>When hunger kicks in during quarantine, use Hungr to search for a restaurant. </p>
+          <p>When quarantine hunger kicks in, use Hungr to search for a restaurant. </p>
           <Form.Group className='search-form'>
             <Form.Label>
             Search by name, city, or genre

@@ -1,9 +1,16 @@
 .App {
   text-align: center;
   margin: 35px;
+  background-color: #CDDDDD;
+}
+
+h1 {
+  font-family: 'Yeseva One', cursive;
+  padding-top: 25px;
 }
 
 .pagination {
   margin: 25px;
   justify-content: center;
+  padding-bottom: 25px;
 }

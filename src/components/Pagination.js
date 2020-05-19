@@ -8,7 +8,7 @@ console.log(pageNumbers);
 		pageNumbers.push(i);
 	}
 
-  if (pageNumbers.length == 1) return (
+  if (pageNumbers.length === 1) return (
     <div> </div>
     )
 
