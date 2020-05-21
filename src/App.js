@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Form, Button, Col, InputGroup, FormControl } from 'react-bootstrap';
+import { Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import Restaurants from './components/Restaurants';
 import Pagination from './components/Pagination';
 //import Formm from './components/Form';
 
 class App extends Component {
 
+//State of app
   constructor(props) {
     super(props);
     this.state = {
@@ -23,6 +24,7 @@ class App extends Component {
     this.onClick = this.clearAll.bind(this);
   }
 
+//Happens once app is visited
   componentDidMount() {
     fetch('https://code-challenge.spectrumtoolbox.com/api/restaurants', {
       headers: {
@@ -40,15 +42,18 @@ class App extends Component {
     });
   }
 
+//Updating a filter change and updating the current page to 1
   handleChange(event) {
     this.setState({search: event.target.value, currentPage: 1});
   }
 
+//Updating input search and setting current page to 1
   handleSubmit(event) {
     event.preventDefault();
     this.setState({selectedSearch: this.state.search, currentPage: 1})
   }
 
+//Clear all filters button by setting state to all
   clearAll(event) {
     this.setState({
     selectedState: "",
@@ -60,54 +65,52 @@ class App extends Component {
 
   render() {
 
-  var { isLoaded, restaurants, currentPage, resPerPage } = this.state;
+    var { isLoaded, restaurants, currentPage, resPerPage } = this.state;
 
-  const restaurantList = restaurants
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .filter((data) => {
-    if(this.state.selectedSearch === '' && this.state.selectedState === '' && this.state.selectedGenre === '') {
-      return data
-    }
-    else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === '' && this.state.selectedGenre === '') {
-      return data
-    }
-    else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === '') {
-      return data
-    }
-    else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === data.genre) {
-      return data
-    }
-    else if(this.state.selectedSearch === '' && this.state.selectedState === data.state && this.state.selectedGenre === '') {
-      return data
-    }
-    else if(this.state.selectedSearch === '' && this.state.selectedState === '' && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
-      return data
-    }
-    else if(this.state.selectedSearch === '' && data.state.toLowerCase().includes(this.state.selectedState.toLowerCase()) && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
-      return data
-    }
+//function that maps all restaurants based on filters chosen
+    const restaurantList = restaurants
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter((data) => {
+      if(this.state.selectedSearch === '' && this.state.selectedState === '' && this.state.selectedGenre === '') {
+        return data
+      }
+      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === '' && this.state.selectedGenre === '') {
+        return data
+      }
+      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === '') {
+        return data
+      }
+      else if((data.name.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.city.toLowerCase().includes(this.state.selectedSearch.toLowerCase()) || data.genre.toLowerCase().includes(this.state.selectedSearch.toLowerCase())) && this.state.selectedState === data.state && this.state.selectedGenre === data.genre) {
+        return data
+      }
+      else if(this.state.selectedSearch === '' && this.state.selectedState === data.state && this.state.selectedGenre === '') {
+        return data
+      }
+      else if(this.state.selectedSearch === '' && this.state.selectedState === '' && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
+        return data
+      }
+      else if(this.state.selectedSearch === '' && data.state.toLowerCase().includes(this.state.selectedState.toLowerCase()) && data.genre.toLowerCase().includes(this.state.selectedGenre.toLowerCase())) {
+        return data
+      }
+    })
 
-  })
+//Get current posts depending on page
+    const indexOfLastRes = currentPage * resPerPage;
+    const indexOfFirstRes = indexOfLastRes - resPerPage;
+    const currentRestaurants = restaurantList.slice(indexOfFirstRes, indexOfLastRes);
 
-  //Get current posts
-  const indexOfLastRes = currentPage * resPerPage;
-  const indexOfFirstRes = indexOfLastRes - resPerPage;
-  const currentRestaurants = restaurantList.slice(indexOfFirstRes, indexOfLastRes);
+//Change page
+    const paginate = (pageNumber) => {
+      this.setState({currentPage: pageNumber});
+    } 
 
-  //change page 
-  const paginate = (pageNumber) => {
-    this.setState({currentPage: pageNumber});
-  } 
-
-console.log(this.state);
-      return (
-        <div className='App'>
-          <div className=''>
-          <h1>HUNGR</h1>
-          <h4>When quarantine hunger kicks in, use Hungr to search for a restaurant. </h4>
-          <div className="search-section">
-            <Form.Group className="search-group">
-              <InputGroup className="search">
+    return (
+      <div className='App'>
+        <h1>HUNGR</h1>
+        <h4>When quarantine hunger kicks in, use Hungr to search for a restaurant. </h4>
+        <div className="search-section">
+          <Form.Group className="search-group">
+            <InputGroup className="search">
               <FormControl
               className='search-bar'
               type='text'
@@ -119,18 +122,18 @@ console.log(this.state);
               onChange={this.handleChange}
               />
               <InputGroup.Append>
-              <Button
-              variant="outline-dark"
-              className='search-button' 
-              type='button'
-              size="sm"
-              onClick={this.handleSubmit}
-              > 
-              Search 
-              </Button>
+                <Button
+                variant="outline-dark"
+                className='search-button' 
+                type='button'
+                size="sm"
+                onClick={this.handleSubmit}
+                > 
+                Search 
+                </Button>
               </InputGroup.Append>
-              </InputGroup>
-            </Form.Group>
+            </InputGroup>
+          </Form.Group>
           <Form.Group className="dropdown search-group">
             <label>
             State
@@ -193,8 +196,8 @@ console.log(this.state);
                 <option value="WY">Wyoming</option>
               </select>
             </label>
-            </Form.Group>
-            <Form.Group className="dropdown search-group">
+          </Form.Group>
+          <Form.Group className="dropdown search-group">
             <label>
             Genre
               <select value={this.state.selectedGenre}
@@ -238,15 +241,15 @@ console.log(this.state);
             </label>
           </Form.Group> 
           <Form.Group className="search-group">
-          <Button className="clear" size="sm" variant="outline-dark" type="button" onClick={this.onClick}>Clear All Filters</Button>
+            <Button className="clear" size="sm" variant="outline-dark" type="button" onClick={this.onClick}>Clear All Filters</Button>
           </Form.Group>
-         </div>
-          <Restaurants currentRestaurants={currentRestaurants} restaurantList={restaurantList} isLoaded={isLoaded} />
-          <Pagination resPerPage={resPerPage} totalRes={restaurantList.length}  paginate={paginate}/>
         </div>
-        </div>
-      );
-    }
+        <Restaurants currentRestaurants={currentRestaurants} restaurantList={restaurantList} isLoaded={isLoaded} />
+        <Pagination resPerPage={resPerPage} totalRes={restaurantList.length}  paginate={paginate}/>
+        <img className="wheat-image" src="wheat.png" alt="wheat"/>
+      </div>
+    );
+  }
 }
 
 export default App;
