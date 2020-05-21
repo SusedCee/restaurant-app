@@ -1,7 +1,12 @@
 .App {
   text-align: center;
-  margin: 35px;
+  background-color: white;
+}
+
+html {
+  margin: 40px 40px 20px 40px;
   background-color: #CDDDDD;
+
 }
 
 h1 {
@@ -9,8 +14,64 @@ h1 {
   padding-top: 25px;
 }
 
+h4 {
+  font-family: 'Yeseva One', cursive;
+  padding: 25px;
+}
+
 .pagination {
-  margin: 25px;
   justify-content: center;
   padding-bottom: 25px;
+  padding-top: 25px;
 }
+
+a .page-link {
+  color: black;
+}
+
+.loading {
+  height: 100%;
+}
+
+.search-section {
+  display: block !important;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.search-group {
+  width: 300px !important;
+  display: block !important;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media only screen and (min-width: 1300px) {
+  .search-section {
+  padding-left: 30px;
+  display: flex !important;
+
+  }
+  .search-group {
+  width: 300px !important;
+  display: inline-block !important;
+  
+  }
+  .dropdown {
+  	bottom: -6px;
+  }
+}
+
+.select {
+  font-size: 17px;
+}
+
+.input {
+  display: flex;
+  justify-content: center;
+}
+
+.clear {
+  left: 25px !important;
+}
+

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Col, InputGroup, FormControl } from 'react-bootstrap';
 import Restaurants from './components/Restaurants';
 import Pagination from './components/Pagination';
 //import Formm from './components/Form';
@@ -93,9 +93,8 @@ class App extends Component {
   const indexOfLastRes = currentPage * resPerPage;
   const indexOfFirstRes = indexOfLastRes - resPerPage;
   const currentRestaurants = restaurantList.slice(indexOfFirstRes, indexOfLastRes);
-  //const pageNumbers = [];
 
-//change page 
+  //change page 
   const paginate = (pageNumber) => {
     this.setState({currentPage: pageNumber});
   } 
@@ -103,32 +102,41 @@ class App extends Component {
 console.log(this.state);
       return (
         <div className='App'>
+          <div className=''>
           <h1>HUNGR</h1>
-          <p>When quarantine hunger kicks in, use Hungr to search for a restaurant. </p>
-          <Form.Group className='search-form'>
-            <Form.Label>
-            Search by name, city, or genre
-              <Form.Control
+          <h4>When quarantine hunger kicks in, use Hungr to search for a restaurant. </h4>
+          <div className="search-section">
+            <Form.Group className="search-group">
+              <InputGroup className="search">
+              <FormControl
               className='search-bar'
-              type='text' 
+              type='text'
+              size="sm"
               value={this.state.value}
-              placeholder="e.g: Studio Cake, Reno, Italian"
+              aria-label="Search by name, city, or genre"
+              aria-describedby="basic-addon2"
+              placeholder="Search by name, city, or genre"
               onChange={this.handleChange}
               />
-            </Form.Label>
+              <InputGroup.Append>
               <Button
               variant="outline-dark"
               className='search-button' 
               type='button'
+              size="sm"
               onClick={this.handleSubmit}
               > 
               Search 
               </Button>
-              <br />
+              </InputGroup.Append>
+              </InputGroup>
+            </Form.Group>
+          <Form.Group className="dropdown search-group">
             <label>
             State
               <select 
               value={this.state.selectedState}
+              className="select"
               onChange={(e) => this.setState({selectedState: e.target.value, currentPage: 1})}
               >
                 <option value=''>All</option>
@@ -185,9 +193,12 @@ console.log(this.state);
                 <option value="WY">Wyoming</option>
               </select>
             </label>
+            </Form.Group>
+            <Form.Group className="dropdown search-group">
             <label>
             Genre
               <select value={this.state.selectedGenre}
+              className="select"
                 onChange={(e) => this.setState({selectedGenre: e.target.value, currentPage: 1})}>
                 <option value=''>All</option>
                 <option value="American">American</option>
@@ -225,10 +236,14 @@ console.log(this.state);
                 <option value="Vietnamese">Vietnamese</option>
               </select>
             </label>
+          </Form.Group> 
+          <Form.Group className="search-group">
+          <Button className="clear" size="sm" variant="outline-dark" type="button" onClick={this.onClick}>Clear All Filters</Button>
           </Form.Group>
-          <Button variant="outline-dark" type="button" onClick={this.onClick}>Reset All</Button>
+         </div>
           <Restaurants currentRestaurants={currentRestaurants} restaurantList={restaurantList} isLoaded={isLoaded} />
           <Pagination resPerPage={resPerPage} totalRes={restaurantList.length}  paginate={paginate}/>
+        </div>
         </div>
       );
     }

@@ -10,7 +10,7 @@ const Restaurants = ({ restaurantList, isLoaded, currentRestaurants }) => {
   }
 
   if (!isLoaded) {
-    return <div> Loading restaurants... </div>
+    return <div className='loading'> Loading restaurants... </div>
   }
 
 	return (
